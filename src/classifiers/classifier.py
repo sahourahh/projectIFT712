@@ -1,11 +1,11 @@
 
-from sklearn.linear_model import LinearRegression
+
 
 
 class Classifier:
-    def __init__(self, DataManager):
+    def __init__(self, DataManager, classifier):
         self.dm = DataManager
-        self._clf = LinearRegression()
+        self._clf = classifier
         self.X_train = DataManager.getBasicTrainData()
         self.X_test = DataManager.getBasicTestData()
         self.t_train = DataManager.getTrainTargets()
