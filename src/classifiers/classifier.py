@@ -37,6 +37,7 @@ class Classifier:
         """
         error = self._clf.score(X,t)
         return error
+        
     def show_stats(self):
         """
         show training error and test error
@@ -44,7 +45,6 @@ class Classifier:
         """
         print('training error is {}'.format(self._error(self.X_train,self.t_train)))
         print('test error is {}'.format(self._error(self.X_test,self.t_test)))
-
 
 
 
