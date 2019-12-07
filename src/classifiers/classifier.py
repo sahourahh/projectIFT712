@@ -7,7 +7,7 @@ class Classifier:
         self.dm = DataManager
         self._clf = LinearRegression()
         self.X_train = DataManager.getBasicTrainData()
-        self.X_test = DataManager.getBasicTestData()[1]
+        self.X_test = DataManager.getBasicTestData()
         self.t_train = DataManager.getTrainTargets()
         self.t_test = DataManager.getTestTargets()
 
