@@ -37,5 +37,5 @@ class Classifier:
         """
         show training error and test error
         """
-        print('Training error is {:.4f} %'.format(self._error(self.X_train ,self.t_train) ) *100)
-        print('Test error is {:.4f} %'.format(self._error(self.X_test ,self.t_test) ) *100)
+        print('Training error is {:.4f} %'.format(self._error(self.X_train ,self.t_train)*100 ))
+        print('Test error is {:.4f} %'.format(self._error(self.X_test ,self.t_test)*100 ))
