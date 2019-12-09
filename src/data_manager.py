@@ -5,13 +5,6 @@
 ##################################
 
 
-from PIL import Image
-import imagehash  #pip install ImageHash
-import glob, os
-import matplotlib.pyplot
-
-from scipy import ndimage, misc
-####################
 
 import pandas as pd 
 import numpy as np
@@ -85,7 +78,7 @@ class DataManager:
         :return: A vector of data classes
         """
         if len(self._y_train)==0 :
-            self._extractTrainTargets()  
+            self._extractBasicData()   
         return self._y_train
 
     def getTestTargets(self):
@@ -94,7 +87,7 @@ class DataManager:
         :return: A vector of data classes
         """  
         if len(self._y_test)==0 :
-            self._extractTestTargets()      
+            self._extractBasicData()      
         return self._y_test
 
     def getListOfClasses(self):
@@ -105,4 +98,3 @@ class DataManager:
         if len(self._classes)==0 :
             self._extractBasicData()   
         return self._classes
-
