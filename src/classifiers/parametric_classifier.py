@@ -30,5 +30,5 @@ class ParametricClassifier(Classifier):
             raise AttributeError("Please set ParametricClassifier's subclass self.model and self.param_grid before"
                                  " trying to train the classifier.")
 
-        self._clf = grid_search.fit(self.X_train, self.y_train).best_estimator_
+        self._clf = grid_search.fit(self.X_train, self.t_train).best_estimator_
         super().train()
