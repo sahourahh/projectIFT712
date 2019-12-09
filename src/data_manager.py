@@ -4,12 +4,13 @@
 # Sahar Tahir (19 145 088)       #
 ##################################
 
-from __future__ import division
+
 from PIL import Image
- 	
-#from path import path
-import os
+import imagehash  #pip install ImageHash
+import glob, os
 import matplotlib.pyplot
+
+from scipy import ndimage, misc
 ####################
 
 import pandas as pd 
@@ -32,8 +33,7 @@ class DataManager:
     _y_train = pd.DataFrame()
     _y_test = pd.DataFrame()
     _classes = []
-    _TrainTargets=[]
-    _TestTargets=[]
+    _imageFeature=[]
 
 
 
@@ -55,27 +55,8 @@ class DataManager:
             self._X_train, self._X_test = train.values[train_index], train.values[test_index]  
             self._y_train, self._y_test = classes_labels[train_index], classes_labels[test_index]
 
-    def _extractTrainTargets(self):
-        """
-        This function generates Train targets
-        """
-        if len(self._classes)==0 or self._y_train.shape==(0,0):
-            self._extractBasicData()
-        T=np.zeros([len(self._y_train),len(self._classes)])
-        for i in range(0,len(self._y_train)):
-            T[i,self._y_train[i]]=1
-        self._TrainTargets= T
     
-    def _extractTestTargets(self):
-        """
-        This function generates Test targets
-        """
-        if len(self._classes)==0 or self._y_test.shape==(0,0):
-            self._extractBasicData()
-        T=np.zeros([len(self._y_test),len(self._classes)])
-        for i in range(0,len(self._y_test)):
-            T[i,self._y_test[i]]=1
-        self._TestTargets = T
+
 
 ###########################################################################################################################################
     
@@ -101,20 +82,20 @@ class DataManager:
     def getTrainTargets(self):        
         """
         This function calls the private function _extractTrainTargets() to extract train Targets if they aren't already extracted
-        :return: The result of _extractTrainTargets() which is a matrix of one hot vector
+        :return: A vector of data classes
         """
-        if len(self._TrainTargets)==0 :
+        if len(self._y_train)==0 :
             self._extractTrainTargets()  
-        return self._TrainTargets
+        return self._y_train
 
     def getTestTargets(self):
         """
         This function calls the private function _extractTestTargets() to extract test Targets if they aren't already extracted
-        :return: The result of _extractTestTargets() which is a matrix of one hot vector
+        :return: A vector of data classes
         """  
-        if len(self._TestTargets)==0 :
+        if len(self._y_test)==0 :
             self._extractTestTargets()      
-        return self._TestTargets
+        return self._y_test
 
     def getListOfClasses(self):
         """
@@ -125,5 +106,3 @@ class DataManager:
             self._extractBasicData()   
         return self._classes
 
-
-    
