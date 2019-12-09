@@ -1,7 +1,4 @@
 
-
-
-
 class Classifier:
     def __init__(self, DataManager, classifier):
         self.dm = DataManager
@@ -14,10 +11,8 @@ class Classifier:
     def train(self):
         """
         train classifier using data manager's training data
-
         """
-        classifier = self._clf.fit(self.X_train, self.t_train)
-
+        self._clf.fit(self.X_train, self.t_train)
 
     def prediction(self, X):
         """
@@ -28,25 +23,19 @@ class Classifier:
         prediction = self._clf.predict(X)
         return prediction
 
-    def _error(self,X,t):
+    def _error(self ,X ,t):
         """
         error quantifiying the quality of prediction
         :param X:data input
         :param t:target
         :return: score
         """
-        error = self._clf.score(X,t)
+        error = self._clf.score(X ,t)
         return error
 
     def show_stats(self):
         """
         show training error and test error
-
         """
-        print('training error is {}'.format(self._error(self.X_train,self.t_train)))
-        print('test error is {}'.format(self._error(self.X_test,self.t_test)))
-
-
-
-
-
+        print('Training error is {:.4f} %'.format(self._error(self.X_train ,self.t_train) ) *100)
+        print('Test error is {:.4f} %'.format(self._error(self.X_test ,self.t_test) ) *100)
