@@ -15,7 +15,7 @@ class ParametricClassifier(Classifier):
         :param data_manager: data manager used by the classifier
         :param k: number of cross-validation's folds
         """
-        super().__init__(data_manager)
+        super().__init__(data_manager, None)
         self.k = k  # nb of cross-validation loops
 
     def train(self):
@@ -25,7 +25,7 @@ class ParametricClassifier(Classifier):
         :return: None, the model is considered trained with the best hyper parameters found once this method is finished
         """
         try:
-            grid_search = GridSearchCV(self.model, self.param_grid, n_jobs=-1, cv=self.k)
+            grid_search = GridSearchCV(self.model, self.param_grid, n_jobs=-1, cv=self.k, iid=False, refit=True)
         except AttributeError:
             raise AttributeError("Please set ParametricClassifier's subclass self.model and self.param_grid before"
                                  " trying to train the classifier.")
