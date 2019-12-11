@@ -36,4 +36,5 @@ class ParametricClassifier(Classifier):
         if verbose:
             print("The best parameters are {} with a score of {:.2f}"
                   .format(grid_search.best_params_, grid_search.best_score_))
+        
         super().train()
