@@ -5,15 +5,15 @@ from sklearn.svm import SVC
 
 class SvmClassifier(ParametricClassifier):
 
-    def __init__(self, data_manager):
-        super().__init__(data_manager)
+    def __init__(self, data_manager, useImageData):
+        super().__init__(data_manager, useImageData)
         self.model = SVC()
         self.param_grid = {
-            "kernel" : ['poly'],# 'rbf', 'sigmoid'],    # best found : 'poly'
-            "C" : np.geomspace(0.0001, 0.001, num=5),   # best found : 0.00031622776601683794
-            "gamma": np.geomspace(0.0001, 0.1, num=4),  # best found : 0.0001 (tends to infinitely loop bellow)
-            "coef0": np.linspace(5, 25, num=5),    # best found : 20.0
-            "degree": range(7, 11)  # best found : 8
+            "kernel" : ['rbf', 'sigmoid'],# 'poly'],    # best found : 'poly'
+            "C" : np.geomspace(500, 1000, num=15),   # best found : 0.00031622776601683794
+            "gamma": np.geomspace(0.000001, 0.1, num=15),  # best found : 0.0001 (tends to infinitely loop bellow)
+            # "coef0": np.geomspace(np.nextafter(0, 1), 0.00001),    # best found : 20.0
+            # "degree": range(2, 7, 2)  # best found : 8
         }
 
     def train(self, verbose=True):
