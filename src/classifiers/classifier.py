@@ -14,12 +14,17 @@ class Classifier:
 
         self.t_train = DataManager.getTrainTargets()
         self.t_test = DataManager.getTestTargets()
+        self.image_train=DataManager.getImageTrainData()
+        self.image_test=DataManager.getImageTestData()
+        self.ALL_train=DataManager.getALLTrainData()
+        self.ALL_test=DataManager.getALLTestData()
+
 
     def train(self):
         """
         train classifier using data manager's training data
         """
-        self._clf.fit(self.X_train, self.t_train)
+        self._clf.fit(self.ALL_train, self.t_train)
 
     def prediction(self, X, predict_proba=False):
         """

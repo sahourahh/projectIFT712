@@ -197,9 +197,9 @@ class DataManager:
         original_color  =cv2.imread(imagefile)
         original=cv2.cvtColor(original_color, cv2.COLOR_RGB2GRAY)
         blur=cv2.GaussianBlur(original,(5,5),0)
-        ret,thresh=cv2.threshold(blur,50,255,cv2.THRESH_BINARY) 
-        edges = cv2.Canny(thresh,100,200) 
-        contours,hierarchy=cv2.findContours(edges.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) 
+        ret,thresh=cv2.threshold(blur,50,255,cv2.THRESH_BINARY)
+        edges = cv2.Canny(thresh,100,200)
+        contours,hierarchy=cv2.findContours(edges.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         LENGTH = len(contours)            
         big_cnt=np.vstack([contours[c] for c in range (0,LENGTH)])
 
