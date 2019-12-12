@@ -8,22 +8,15 @@
 import pandas as pd 
 import numpy as np
 import random 
+import cv2
+import math
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import StratifiedShuffleSplit
-
-import matplotlib.pyplot
-
 from sklearn.decomposition import PCA
-    #####
 from PIL import Image
-import glob, os
-import matplotlib.pyplot
-from scipy import ndimage, misc
 from tqdm import tqdm
-import matplotlib.pyplot as plt 
-import cv2
-import math
+
 class DataManager:
 
     _train_file = "../ressources/leaf-classification/train.csv"
@@ -52,14 +45,14 @@ class DataManager:
         """
         This function generates basic train and test data
         """
-        train=pd.read_csv(self._train_file) 
+        train = pd.read_csv(self._train_file)
         
         s = LabelEncoder().fit(train.species)  
         self._classes = list(s.classes_)  
         classes_labels = s.transform(train.species)
-        id_img= train.id 
         train = train.drop(['species'], axis=1)
-        if (self._pca==True):
+
+        if self._pca:
             trainX = train.drop(['id'], axis=1)
             pca = PCA(n_components=0.85 ,svd_solver='full')
             pca.fit(trainX)
@@ -88,11 +81,15 @@ class DataManager:
         j=0
         while max(matrix[:,j])!=float(1):
             j=j+1
+
         index_col=j
+
         i=0
         while matrix[i,j]!=float(1):
             i=i+1
+
         index_row=i
+
         return index_row, index_col
 
     def _first_right_t (self,matrix):
@@ -105,11 +102,15 @@ class DataManager:
         j=len(matrix[0,:])-1   
         while max(matrix[:,j])!=float(1):
             j=j-1
+
         index_col=j
+
         i=0   
         while matrix[i,j]!=float(1):
             i=i+1
+
         index_row=i
+
         return index_row, index_col
 
     def _first_top_l (self,matrix):  
@@ -122,11 +123,15 @@ class DataManager:
         i=0   
         while max(matrix[i,:])!=float(1):
             i=i+1
-        index_row=i        
+
+        index_row=i
+
         j=0  
         while matrix[i,j]!=float(1):
             j=j+1
+
         index_col=j
+
         return index_row, index_col
 
     def _first_bottom_l (self,matrix):
@@ -139,11 +144,15 @@ class DataManager:
         i=len(matrix[:,0])-1   
         while max(matrix[i,:])!=float(1):
             i=i-1
-        index_row=i        
+
+        index_row=i
+
         j=0   
         while matrix[i,j]!=float(1):
             j=j+1
+
         index_col=j
+
         return index_row, index_col
 
     def _rm_frame(self,image):
@@ -152,13 +161,16 @@ class DataManager:
         image: image object
         return: result :image object
         """        
-        image_array=np.asarray(image) #image to array
-        left_r,left_c = self._first_left_t (image_array)
-        right_r,right_c = self._first_right_t (image_array)
-        top_r,top_c = self._first_top_l (image_array)
-        bottom_r,bottom_c = self._first_bottom_l (image_array)
+        image_array = np.asarray(image) #image to array
+
+        left_r, left_c = self._first_left_t (image_array)
+        right_r, right_c = self._first_right_t (image_array)
+        top_r, top_c = self._first_top_l (image_array)
+        bottom_r, bottom_c = self._first_bottom_l (image_array)
+
         image_array = image_array[top_r:bottom_r+1,left_c:right_c+1]
-        result=Image.fromarray(image_array) #array to image
+        result = Image.fromarray(image_array) #array to image
+
         return result   #return an image
    
     def _blackWhite(self,image):
@@ -170,8 +182,8 @@ class DataManager:
         """        
         h = image.histogram()
         nt, n0, n1 = sum(h), h[0], h[-1]
-        p0=round(100*n0/nt,2)  #black
-        p1=round(100*n1/nt,2)    #white
+        p0 = round(100*n0/nt,2)  # black
+        p1 = round(100*n1/nt,2)  # white
         return p0, p1
   
     def _ratio_width_length(self,image):
@@ -192,29 +204,33 @@ class DataManager:
                 angle: deviation of the ellipse that fits the contour
                 m: gradient of the line that fits the contour
                 y0: image of the abscissa 0 by the equation of the line that fits the contour
-        """       
-        peak=0
-        original_color  =cv2.imread(imagefile)
-        original=cv2.cvtColor(original_color, cv2.COLOR_RGB2GRAY)
-        blur=cv2.GaussianBlur(original,(5,5),0)
-        ret,thresh=cv2.threshold(blur,50,255,cv2.THRESH_BINARY) 
-        edges = cv2.Canny(thresh,100,200) 
-        contours,hierarchy=cv2.findContours(edges.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) 
+        """
+        original_color = cv2.imread(imagefile)
+        original = cv2.cvtColor(original_color, cv2.COLOR_RGB2GRAY)
+        blur = cv2.GaussianBlur(original,(5,5),0)
+        ret, thresh = cv2.threshold(blur,50,255,cv2.THRESH_BINARY)
+        edges = cv2.Canny(thresh,100,200)
+        contours, hierarchy = cv2.findContours(edges.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         LENGTH = len(contours)            
-        big_cnt=np.vstack([contours[c] for c in range (0,LENGTH)])
-
-        perimetre=cv2.arcLength(big_cnt,True)
+        big_cnt = np.vstack([contours[c] for c in range (0,LENGTH)])
+        perimetre = cv2.arcLength(big_cnt,True)
         approx = cv2.approxPolyDP(big_cnt,0.01*perimetre,True)
-        peak=len(approx)
-        (x, y), (MA, ma), angle = cv2.fitEllipse(big_cnt)#angle at which object is directed Major Axis and Minor Axis lengths.
+
+        peak = len(approx)
+
+        # angle at which object is directed Major Axis and Minor Axis lengths.
+        (x, y), (MA, ma), angle = cv2.fitEllipse(big_cnt)
+
         a = ma / 2
         b = MA / 2
         eccentricity = math.sqrt(pow(a, 2) - pow(b, 2))
         eccentricity = round(eccentricity / a, 2)
+
         [vx,vy,x,y] = cv2.fitLine(big_cnt, cv2.DIST_L2,0,0.01,0.01) #vx,vy are normalized vector collinear to the line and x0,y0 is a point on the line
         m=vy[0]/vx[0]
         y0=y[0]-m*x[0]
-        return peak, eccentricity, angle ,m, y0
+
+        return peak, eccentricity, angle, m, y0
 
     def _extractImagesCaracteristics(self,N):
         """
@@ -223,22 +239,23 @@ class DataManager:
         return: a dataframe of the features
         """   
         image_data= [[0] * 8 for _ in range(len(N))]  # 9 features for each image, nb_images=1584
+
         for i in tqdm(range(0,len(N))):
             imagefile=self._images_repo+str(N[i])+".jpg"
-            image  = Image.open(imagefile)
+            image = Image.open(imagefile)
             image = image.convert('1')
-            image=self._rm_frame(image)   
+            image = self._rm_frame(image)
             image_data[i][0], image_data[i][1] = self._blackWhite(image) #percentage of black and white pixels
              
-            image_data[i][2] =self._ratio_width_length(image)
+            image_data[i][2] = self._ratio_width_length(image)
 
             peak, eccentricity, angle ,m ,y0 = self._Contour_Features(imagefile)
             
-            image_data[i][3]=peak 
-            image_data[i][4]=eccentricity
-            image_data[i][5]=angle
-            image_data[i][6]=m
-            image_data[i][7]=y0
+            image_data[i][3] = peak
+            image_data[i][4] = eccentricity
+            image_data[i][5] = angle
+            image_data[i][6] = m
+            image_data[i][7] = y0
         
         return pd.DataFrame(data=image_data, columns=['black_pxl%', 'white_pxl%', 'ratio_W/L','nb_peak','ellipse_eccentricity','ellipse_deviation','line_gradient','line_y0'])
 
@@ -246,22 +263,25 @@ class DataManager:
         """
         This function apply the function _extractImageData to train and test data
         """ 
-        if len(self._id_img_train)==0 or len(self._id_img_test)==0  :
-            self._extractBasicData() 
-        if(len(self._X_img_train)==0 ):
+        if len(self._id_img_train) == 0 or len(self._id_img_test) == 0  :
+            self._extractBasicData()
+
+        if len(self._X_img_train) == 0:
             self._X_img_train=self._extractImagesCaracteristics(self._id_img_train).to_numpy()
-        if(len(self._X_img_test)==0):
-            self._X_img_test=self._extractImagesCaracteristics(self._id_img_test).to_numpy()       
 
+        if len(self._X_img_test) == 0:
+            self._X_img_test=self._extractImagesCaracteristics(self._id_img_test).to_numpy()
 
-########################public_functions   
-    def getBasicTrainData(self):          
+########################public_functions
+
+    def getBasicTrainData(self):
         """
         This function calls the private function _extractBasicData() to extract train data
         :return: _X_data_train: Train matrix
         """
         if len(self._X_data_train)==0 :
-            self._extractBasicData() 
+            self._extractBasicData()
+
         return self._X_data_train   
         
     def getBasicTestData(self):          
@@ -270,7 +290,8 @@ class DataManager:
         :return: _X_data_test : Test matrix
         """
         if len(self._X_data_test)==0 :
-            self._extractBasicData() 
+            self._extractBasicData()
+
         return  self._X_data_test
 
     def getTrainTargets(self):        
@@ -279,7 +300,8 @@ class DataManager:
         :return: A vector of data classes
         """
         if len(self._y_train)==0 :
-            self._extractBasicData()   
+            self._extractBasicData()
+
         return self._y_train
 
     def getTestTargets(self):
@@ -288,7 +310,8 @@ class DataManager:
         :return: A vector of data classes
         """  
         if len(self._y_test)==0 :
-            self._extractBasicData()      
+            self._extractBasicData()
+
         return self._y_test
 
     def getListOfClasses(self):
@@ -297,7 +320,8 @@ class DataManager:
         :return: vector of all classes
         """ 
         if len(self._classes)==0 :
-            self._extractBasicData()   
+            self._extractBasicData()
+
         return self._classes
 
     def getImageTrainData(self):          
@@ -306,7 +330,8 @@ class DataManager:
         :return: _X_img_train : Train image features matrix
         """
         if len(self._X_img_train)==0 :
-            self._extractImageData()        
+            self._extractImageData()
+
         return self._X_img_train
  
     def getImageTestData(self):          
@@ -315,7 +340,8 @@ class DataManager:
         :return: _X_img_test  : Test image features matrix
         """
         if len(self._X_img_test)==0:
-            self._extractImageData()        
+            self._extractImageData()
+
         return self._X_img_test
 
     def getALLTrainData(self):          
@@ -325,8 +351,10 @@ class DataManager:
         """
         if len(self._X_all_train)==0:
             if len(self._X_img_train)==0 :
-                self._extractImageData() 
+                self._extractImageData()
+
             self._X_all_train=np.concatenate((self._X_data_train, self._X_img_train), axis=1)
+
         return self._X_all_train
     
     def getALLTestData(self):          
@@ -336,6 +364,8 @@ class DataManager:
         """
         if len(self._X_all_test)==0:
             if len(self._X_img_test)==0 :
-                self._extractImageData() 
+                self._extractImageData()
+
             self._X_all_test=np.concatenate((self._X_data_test, self._X_img_test), axis=1)
+
         return self._X_all_test
