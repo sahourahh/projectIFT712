@@ -1,5 +1,6 @@
 from classifiers.parametric_classifier import ParametricClassifier
 
+import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 class LinearDiscriminantAnalysisClassifier(ParametricClassifier):
@@ -8,5 +9,8 @@ class LinearDiscriminantAnalysisClassifier(ParametricClassifier):
         super().__init__(data_manager)
         self.model = LinearDiscriminantAnalysis()
         self.param_grid = {
-            "solver": ('lsqr', 'eigen') # the 'svd' solver can not be use because of collinear data
+            # the 'svd' solver can not be use because of collinear data
+            "solver": ('lsqr', 'eigen'),    # best found : 'lsqr'
+            # furthermore, the shrinkage doesn't work with the 'svd' solver
+            "shrinkage": np.geomspace(0.000000001, 1).tolist() + [None, 'auto'] # best found : 4.71486636345739e-06
         }
