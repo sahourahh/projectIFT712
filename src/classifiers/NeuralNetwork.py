@@ -1,6 +1,7 @@
 from sklearn.neural_network import MLPClassifier
 from classifiers.parametric_classifier import ParametricClassifier
 import numpy as np
+from itertools import product
 class Neuralnetwork(ParametricClassifier):
 
     def __init__(self, data_manager):
