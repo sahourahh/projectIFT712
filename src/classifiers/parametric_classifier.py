@@ -9,13 +9,13 @@ class ParametricClassifier(Classifier):
     Parent class for any Classifier with hyper parameters
     """
 
-    def __init__(self, data_manager, k=3):
+    def __init__(self, data_manager, useImageData, k=3):
         """
         Init any Classifier with hyper parameters
         :param data_manager: data manager used by the classifier
         :param k: number of cross-validation's folds
         """
-        super().__init__(data_manager, None)
+        super().__init__(data_manager, None, useImageData)
         self.k = k  # nb of cross-validation loops
 
     def train(self, verbose=False):

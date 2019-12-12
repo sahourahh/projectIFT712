@@ -1,11 +1,17 @@
 from sklearn.metrics import accuracy_score, log_loss
 
 class Classifier:
-    def __init__(self, DataManager, classifier):
+    def __init__(self, DataManager, classifier, useImageData=False):
         self.dm = DataManager
         self._clf = classifier
-        self.X_train = DataManager.getBasicTrainData()
-        self.X_test = DataManager.getBasicTestData()
+
+        if useImageData:
+            self.X_train = DataManager.getALLTrainData()
+            self.X_test = DataManager.getALLTestData()
+        else:
+            self.X_train = DataManager.getBasicTrainData()
+            self.X_test = DataManager.getBasicTestData()
+
         self.t_train = DataManager.getTrainTargets()
         self.t_test = DataManager.getTestTargets()
 
