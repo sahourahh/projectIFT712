@@ -16,7 +16,6 @@ import matplotlib.pyplot
 from sklearn.decomposition import PCA
     #####
 from PIL import Image
-import imagehash  
 import glob, os
 import matplotlib.pyplot
 from scipy import ndimage, misc
@@ -202,7 +201,7 @@ class DataManager:
         edges = cv2.Canny(thresh,100,200) 
         contours,hierarchy=cv2.findContours(edges.copy(),cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) 
         LENGTH = len(contours)            
-        big_cnt=np.vstack(contours[c] for c in range (0,LENGTH))
+        big_cnt=np.vstack([contours[c] for c in range (0,LENGTH)])
 
         perimetre=cv2.arcLength(big_cnt,True)
         approx = cv2.approxPolyDP(big_cnt,0.01*perimetre,True)
@@ -223,26 +222,25 @@ class DataManager:
         N: list that contains ids of the images
         return: a dataframe of the features
         """   
-        image_data= [[0] * 9 for _ in range(len(N))]  # 9 features for each image, nb_images=1584
+        image_data= [[0] * 8 for _ in range(len(N))]  # 9 features for each image, nb_images=1584
         for i in tqdm(range(0,len(N))):
             imagefile=self._images_repo+str(N[i])+".jpg"
             image  = Image.open(imagefile)
             image = image.convert('1')
             image=self._rm_frame(image)   
             image_data[i][0], image_data[i][1] = self._blackWhite(image) #percentage of black and white pixels
-            
-            image_data[i][2] = imagehash.average_hash(image) 
-            image_data[i][3] =self._ratio_width_length(image)
+             
+            image_data[i][2] =self._ratio_width_length(image)
 
             peak, eccentricity, angle ,m ,y0 = self._Contour_Features(imagefile)
             
-            image_data[i][4]=peak 
-            image_data[i][5]=eccentricity
-            image_data[i][6]=angle
-            image_data[i][7]=m
-            image_data[i][8]=y0
+            image_data[i][3]=peak 
+            image_data[i][4]=eccentricity
+            image_data[i][5]=angle
+            image_data[i][6]=m
+            image_data[i][7]=y0
         
-        return pd.DataFrame(data=image_data, columns=['black_pxl%', 'white_pxl%', 'im_hash','ratio_W/L','nb_peak','ellipse_eccentricity','ellipse_deviation','line_gradient','line_y0'])
+        return pd.DataFrame(data=image_data, columns=['black_pxl%', 'white_pxl%', 'ratio_W/L','nb_peak','ellipse_eccentricity','ellipse_deviation','line_gradient','line_y0'])
 
     def _extractImageData(self):
         """
@@ -341,3 +339,14 @@ class DataManager:
                 self._extractImageData() 
             self._X_all_test=np.concatenate((self._X_data_test, self._X_img_test), axis=1)
         return self._X_all_test
+
+dm=DataManager()
+dm.getBasicTrainData()
+dm.getBasicTestData()
+dm.getListOfClasses()
+dm.getImageTrainData()
+dm.getImageTestData()
+dm.getALLTestData()
+dm.getALLTrainData()
+dm.getTrainTargets()
+dm.getTestTargets()
