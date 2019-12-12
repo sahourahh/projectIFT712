@@ -11,8 +11,8 @@ class SvmRbf(ParametricClassifier):
         self.param_grid = {
             "kernel" : ['poly'],# 'rbf', 'sigmoid'],  # best found : 'poly'
             "C" : np.geomspace(0.0001, 0.001, num=5),    # best found : 0.00031622776601683794
-            "gamma": np.geomspace(0.0001, 0.1, num=5), # best found : 0.0001 (tends to infinitely loop bellow)
-            "coef0": np.geomspace(1, 40, num=5),    # best found : 6.32455532033676
+            "gamma": np.geomspace(0.0001, 0.1, num=4), # best found : 0.0001 (tends to infinitely loop bellow)
+            "coef0": np.linspace(5, 25, num=5),    # best found : 20.0
             "degree": range(7, 11)  # best found : 8
         }
 
