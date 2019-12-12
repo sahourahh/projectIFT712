@@ -22,6 +22,7 @@ class ParametricClassifier(Classifier):
         """
         train override to search for the best hyper parameters before actually training the model
         WARNING : this method might take a long time to execute
+        :param verbose: whether to show verbosity for cross validation or not
         :return: None, the model is considered trained with the best hyper parameters found once this method is finished
         """
         try:
@@ -36,5 +37,5 @@ class ParametricClassifier(Classifier):
         if verbose:
             print("The best parameters are {} with a score of {:.2f}"
                   .format(grid_search.best_params_, grid_search.best_score_))
-        
+
         super().train()
