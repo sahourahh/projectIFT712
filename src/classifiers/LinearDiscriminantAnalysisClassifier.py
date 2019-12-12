@@ -5,12 +5,12 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 class LinearDiscriminantAnalysisClassifier(ParametricClassifier):
 
-    def __init__(self, data_manager):
-        super().__init__(data_manager)
+    def __init__(self, data_manager, useImageData):
+        super().__init__(data_manager, useImageData)
         self.model = LinearDiscriminantAnalysis()
         self.param_grid = {
             # the 'svd' solver can not be use because of collinear data
-            "solver": ('lsqr', 'eigen'),    # best found : 'lsqr'
+            "solver": ['lsqr'],# 'eigen'],    # best found : 'lsqr'
             # furthermore, the shrinkage doesn't work with the 'svd' solver
-            "shrinkage": np.geomspace(0.000000001, 1).tolist() + [None, 'auto'] # best found : 4.71486636345739e-06
+            "shrinkage": np.geomspace(0.000000000001, 1).tolist() + [None, 'auto'] # best found : 4.71486636345739e-06
         }
