@@ -339,14 +339,3 @@ class DataManager:
                 self._extractImageData() 
             self._X_all_test=np.concatenate((self._X_data_test, self._X_img_test), axis=1)
         return self._X_all_test
-
-dm=DataManager()
-dm.getBasicTrainData()
-dm.getBasicTestData()
-dm.getListOfClasses()
-dm.getImageTrainData()
-dm.getImageTestData()
-dm.getALLTestData()
-dm.getALLTrainData()
-dm.getTrainTargets()
-dm.getTestTargets()
