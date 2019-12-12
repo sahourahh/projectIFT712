@@ -5,5 +5,6 @@ class RandomForest(ParametricClassifier):
 
     def __init__(self, data_manager):
         super().__init__(data_manager)
-        self.model = RandomForestClassifier(n_estimators=100)
-        self.param_grid = {"max_depth": np.linspace(10, 100, num = 10)} #best=20
+        self.model = RandomForestClassifier()
+        self.param_grid = {"max_depth": np.linspace(10, 100, num = 10),   #best=60
+                           "n_estimators":range(50,100) }   #   best=99
