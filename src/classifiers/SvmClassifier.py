@@ -9,11 +9,11 @@ class SvmClassifier(ParametricClassifier):
         super().__init__(data_manager, useImageData)
         self.model = SVC()
         self.param_grid = {
-            "kernel" : ['rbf', 'sigmoid'],# 'poly'],    # best found : 'poly'
-            "C" : np.geomspace(500, 1000, num=15),   # best found : 0.00031622776601683794
-            "gamma": np.geomspace(0.000001, 0.1, num=15),  # best found : 0.0001 (tends to infinitely loop bellow)
-            # "coef0": np.geomspace(np.nextafter(0, 1), 0.00001),    # best found : 20.0
-            # "degree": range(2, 7, 2)  # best found : 8
+            "kernel" : ['rbf', 'sigmoid'],# 'poly'],
+            "C" : np.geomspace(0.00001, 1, num=6),
+            "gamma": np.geomspace(0.00001, 0.01, num=4),  # WARNING : tends to infinitely loop bellow 0.0001 for 'poly'
+            "coef0": np.linspace(20, 15, num=3),
+            # "degree": range(2, 7, 2)  # not used because we deactivated the 'poly' kernel
         }
 
     def train(self, verbose=True):

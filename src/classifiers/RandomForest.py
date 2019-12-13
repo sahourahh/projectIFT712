@@ -9,5 +9,5 @@ class RandomForest(ParametricClassifier):
         self.model = RandomForestClassifier()
         self.param_grid = {
             "max_depth": np.linspace(10, 100, num = 10),   # best=50
-            "n_estimators":range(50,100)    # best=89
+            "n_estimators":range(88, 91)    # best=89
         }
